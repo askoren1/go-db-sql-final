@@ -4,6 +4,7 @@ import (
 	"database/sql"
 )
 
+/*
 type ParcelStore struct {
 	db *sql.DB
 }
@@ -18,6 +19,7 @@ func (s ParcelStore) Add(p Parcel) (int, error) {
 	// верните идентификатор последней добавленной записи
 	return 0, nil
 }
+
 
 func (s ParcelStore) Get(number int) (Parcel, error) {
 	// реализуйте чтение строки по заданному number
@@ -58,3 +60,4 @@ func (s ParcelStore) Delete(number int) error {
 
 	return nil
 }
+*/
