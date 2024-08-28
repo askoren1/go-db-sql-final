@@ -60,7 +60,7 @@ func (s ParcelService) Register(client int, address string) (Parcel, error) {
 }
 
 func (s ParcelStore) Add(p Parcel) (int, error) {
-	// реализуйте добавление строки в таблицу parcel, используйте данные из переменной p
+	// реализуем добавление строки в таблицу parcel, используйте данные из переменной p
 	res, err := s.db.Exec("INSERT INTO parcel (client, status, address, created_at) VALUES (:client, :status, :address, :created_at)",
 		sql.Named("client", p.Client),
 		sql.Named("status", p.Status),
@@ -94,7 +94,7 @@ func (s ParcelService) PrintClientParcels(client int) error {
 }
 
 func (s ParcelStore) GetByClient(client int) ([]Parcel, error) {
-	// реализуйте чтение строк из таблицы parcel по заданному client
+	// реализуем чтение строк из таблицы parcel по заданному client
 	// здесь из таблицы может вернуться несколько строк
 	rows, err := s.db.Query("SELECT *  FROM parcel WHERE Client = :Client", sql.Named("Client", client))
 	if err != nil {
