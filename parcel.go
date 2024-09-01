@@ -9,6 +9,10 @@ type ParcelStore struct {
 	db *sql.DB
 }
 
+func NewParcelStore(db *sql.DB) ParcelStore {
+	return ParcelStore{db: db}
+}
+
 func (s ParcelStore) Add(p Parcel) (int, error) {
 	// реализуем добавление строки в таблицу parcel, используйте данные из переменной p
 	res, err := s.db.Exec("INSERT INTO parcel (client, status, address, created_at) VALUES (:client, :status, :address, :created_at)",
@@ -68,6 +72,11 @@ func (s ParcelStore) GetByClient(client int) ([]Parcel, error) {
 		res = append(res, r)
 	}
 
+	if err := rows.Err(); err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+
 	return res, nil
 }
 
@@ -82,39 +91,21 @@ func (s ParcelStore) SetStatus(number int, status string) error {
 
 func (s ParcelStore) SetAddress(number int, address string) error {
 
-	// Получим текущую посылку по номеру
-	parcel, err := s.Get(number)
-	if err != nil {
-		return err
-	}
-	// Проверим, что статус посылки равен "registered"
-	if parcel.Status != "registered" {
-		return fmt.Errorf("невозможно обновить адрес для посылки со статусом %s", parcel.Status)
-	}
-
 	// реализуйте обновление адреса в таблице parcel
 	// менять адрес можно только если значение статуса registered
-	_, err = s.db.Exec("UPDATE parcel SET address = :address WHERE Number = :Number",
+	_, err := s.db.Exec("UPDATE parcel SET address = :address WHERE Number = :Number AND Status = :Status",
 		sql.Named("address", address),
-		sql.Named("Number", number))
+		sql.Named("Number", number),
+		sql.Named("Status", "registered"))
 	return err
 
 }
 
 func (s ParcelStore) Delete(number int) error {
-	// Получите текущий статус посылки
-	parcel, err := s.Get(number)
-	if err != nil {
-		return err
-	}
-
-	// Проверим, что статус посылки равен "registered"
-	if parcel.Status != "registered" {
-		return fmt.Errorf("невозможно удалить посылку со статусом %s", parcel.Status)
-	}
-
 	// Удалим строку из таблицы parcel
-	_, err = s.db.Exec("DELETE FROM parcel WHERE Number = :Number", sql.Named("Number", number))
+	_, err := s.db.Exec("DELETE FROM parcel WHERE Number = :Number AND Status = :Status",
+		sql.Named("Number", number),
+		sql.Named("Status", "registered"))
 	if err != nil {
 		return err
 	}

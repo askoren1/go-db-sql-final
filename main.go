@@ -26,10 +26,6 @@ type ParcelService struct {
 	store ParcelStore
 }
 
-func NewParcelStore(db *sql.DB) ParcelStore {
-	return ParcelStore{db: db}
-}
-
 func NewParcelService(store ParcelStore) ParcelService {
 	return ParcelService{store: store}
 }
